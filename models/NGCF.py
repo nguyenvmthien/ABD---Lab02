@@ -206,7 +206,7 @@ class NGCFTrainer:
         return users, pos_items, neg_items
 
     # ------------------------------------------------------------------
-    def fit(self, train: Dict[int, Set[int]], seed: int = 42) -> None:
+    def fit(self, train: Dict[int, Set[int]], seed: int = 42) -> List[float]:
         rng = np.random.default_rng(seed)
         optimizer = torch.optim.Adam(
             self.model.parameters(), lr=self.cfg.lr
@@ -214,6 +214,7 @@ class NGCFTrainer:
         self.model.train()
         best_loss = float("inf")
         no_improve = 0
+        loss_history: List[float] = []
 
         for epoch in range(self.cfg.epochs):
             users, pos_items, neg_items = self._build_triplets(train, rng)
@@ -248,6 +249,7 @@ class NGCFTrainer:
                 n_batch += 1
 
             avg_loss = epoch_loss / max(n_batch, 1)
+            loss_history.append(avg_loss)
             print(
                 f"[NGCF] Epoch {epoch+1}/{self.cfg.epochs}: "
                 f"{len(users)} triplets, avg_loss={avg_loss:.6f}"
@@ -265,6 +267,8 @@ class NGCFTrainer:
                         f"(no improvement for {self.cfg.patience} epochs, best_loss={best_loss:.6f})"
                     )
                     break
+
+        return loss_history
 
     # ------------------------------------------------------------------
     def score_items(self, user: int, items: np.ndarray) -> np.ndarray:

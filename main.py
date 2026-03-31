@@ -31,6 +31,14 @@ from pathlib import Path
 import numpy as np
 import torch
 
+try:
+    import matplotlib
+    matplotlib.use("Agg")  # non-interactive backend
+    import matplotlib.pyplot as plt
+    HAS_MPL = True
+except ImportError:
+    HAS_MPL = False
+
 # ---------------------------------------------------------------------------
 # Make sure the project root is on sys.path so relative imports work
 # when invoked as  `python src/main.py`
@@ -178,7 +186,11 @@ def run_experiment(
     # ---- Load checkpoint or train -----------------------------------------
     train_time = 0.0
     ckpt_dir = results_dir / "checkpoints"
-    ckpt_path = ckpt_dir / f"{model_name}_{dataset_name}.pt"
+    ckpt_tag = (
+        f"{model_name}_{dataset_name}"
+        f"_emb{args.emb_dim}_lr{args.lr}_bs{args.batch_size}_ep{args.epochs}"
+    )
+    ckpt_path = ckpt_dir / f"{ckpt_tag}.pt"
 
     if args.eval_only:
         # Load from checkpoint
@@ -192,11 +204,12 @@ def run_experiment(
             return None
         trainer.load_checkpoint(ckpt_path)
         logger.info(f"Loaded checkpoint from {ckpt_path} (skipping training)")
+        loss_history = []
     else:
         t_train_start = time.time()
-        trainer.fit(ds.train, seed=args.seed)
+        loss_history = trainer.fit(ds.train, seed=args.seed)
         train_time = time.time() - t_train_start
-        logger.info(f"Training finished in {train_time:.2f}s")
+        logger.info(f"Training finished in {train_time:.2f}s ({len(loss_history)} epochs)")
 
     # ---- Evaluate ---------------------------------------------------------
     t_eval_start = time.time()
@@ -245,19 +258,36 @@ def run_experiment(
         "eval_time_s": round(eval_time, 2),
         "cpu_peak_mb": round(cpu_peak / 1024**2, 1),
         "gpu_peak_mb": round(gpu_peak / 1024**2, 1),
+        "loss_history": [round(l, 6) for l in loss_history],
+        "actual_epochs": len(loss_history),
         "timestamp": datetime.now().isoformat(),
     }
 
-    json_path = results_dir / f"{model_name}_{dataset_name}.json"
+    json_path = results_dir / f"{ckpt_tag}.json"
     results_dir.mkdir(parents=True, exist_ok=True)
     with open(json_path, "w") as f:
         json.dump(record, f, indent=2)
     logger.info(f"Results saved to {json_path}")
 
+    # ---- Plot loss curve ---------------------------------------------------
+    if loss_history and HAS_MPL:
+        fig, ax = plt.subplots(figsize=(8, 5))
+        epochs_range = list(range(1, len(loss_history) + 1))
+        ax.plot(epochs_range, loss_history, marker="o", markersize=3, linewidth=1.5)
+        ax.set_xlabel("Epoch", fontsize=12)
+        ax.set_ylabel("Avg Loss", fontsize=12)
+        ax.set_title(f"{model_name} on {dataset_name} — Training Loss", fontsize=14)
+        ax.grid(True, alpha=0.3)
+        fig.tight_layout()
+        plot_path = results_dir / f"{ckpt_tag}_loss.png"
+        fig.savefig(plot_path, dpi=150)
+        plt.close(fig)
+        logger.info(f"Loss plot saved to {plot_path}")
+
     # ---- Save checkpoint (only if we trained) ------------------------------
     if not args.eval_only:
         ckpt_dir.mkdir(parents=True, exist_ok=True)
-        ckpt_save_path = ckpt_dir / f"{model_name}_{dataset_name}.pt"
+        ckpt_save_path = ckpt_dir / f"{ckpt_tag}.pt"
         trainer.save_checkpoint(ckpt_save_path)
         logger.info(f"Checkpoint saved to {ckpt_save_path}")
 

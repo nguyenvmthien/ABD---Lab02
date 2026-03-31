@@ -321,7 +321,7 @@ class SimpleXTrainer:
     # Override fit to keep histories around for scoring
     _fit_orig = None
 
-    def fit(self, train: Dict[int, Set[int]], seed: int = 42) -> None:
+    def fit(self, train: Dict[int, Set[int]], seed: int = 42) -> List[float]:
         self._histories = self._build_user_histories(train)
 
         rng = np.random.default_rng(seed)
@@ -338,6 +338,7 @@ class SimpleXTrainer:
         self.model.train()
         best_loss = float("inf")
         no_improve = 0
+        loss_history: List[float] = []
 
         for epoch in range(self.cfg.epochs):
             rng.shuffle(pairs)
@@ -396,6 +397,7 @@ class SimpleXTrainer:
                 n_batch += 1
 
             avg = epoch_loss / max(n_batch, 1)
+            loss_history.append(avg)
             print(
                 f"[SimpleX] Epoch {epoch+1}/{self.cfg.epochs}: "
                 f"{len(pairs)} pairs, avg loss = {avg:.6f}"
@@ -413,6 +415,8 @@ class SimpleXTrainer:
                         f"(no improvement for {self.cfg.patience} epochs, best_loss={best_loss:.6f})"
                     )
                     break
+
+        return loss_history
 
     # ------------------------------------------------------------------
     def save_checkpoint(self, path: str | Path) -> None:
