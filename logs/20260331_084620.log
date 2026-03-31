@@ -1,0 +1,81 @@
+2026-03-31 08:46:20 | INFO    | Experiment tag : 20260331_084620
+2026-03-31 08:46:20 | INFO    | Models         : ['ConvNCF', 'LightGCN', 'NGCF', 'SimpleX']
+2026-03-31 08:46:20 | INFO    | Datasets       : ['movielens', 'amazon-book']
+2026-03-31 08:46:20 | INFO    | Device         : cuda
+2026-03-31 08:46:20 | INFO    | Epochs         : 2
+2026-03-31 08:46:20 | INFO    | Batch size     : 4096
+2026-03-31 08:46:20 | INFO    | Embedding dim  : 64
+2026-03-31 08:46:20 | INFO    | Learning rate  : 0.001
+2026-03-31 08:46:20 | INFO    | Seed           : 42
+2026-03-31 08:46:20 | INFO    | GPU name       : Tesla T4
+2026-03-31 08:46:20 | INFO    | GPU memory     : 14.6 GB
+2026-03-31 08:46:20 | INFO    | ======================================================================
+2026-03-31 08:46:20 | INFO    | MODEL=ConvNCF  DATASET=movielens  DEVICE=cuda
+2026-03-31 08:46:20 | INFO    | ======================================================================
+2026-03-31 08:46:21 | INFO    | Dataset loaded in 0.87s  (users=6040, items=3706, train=800167, test=200042)
+2026-03-31 08:48:03 | INFO    | Training finished in 101.99s
+2026-03-31 08:51:09 | INFO    | Evaluation finished in 186.26s
+2026-03-31 08:51:09 | INFO    | --- Results ---
+2026-03-31 08:51:09 | INFO    |   Recall@10: 0.003205
+2026-03-31 08:51:09 | INFO    |   Recall@20: 0.003266
+2026-03-31 08:51:09 | INFO    |   NDCG@10: 0.015191
+2026-03-31 08:51:09 | INFO    |   NDCG@20: 0.011206
+2026-03-31 08:51:09 | INFO    |   Precision@10: 0.006606
+2026-03-31 08:51:09 | INFO    |   Precision@20: 0.003386
+2026-03-31 08:51:09 | INFO    |   HR@10: 0.066060
+2026-03-31 08:51:09 | INFO    |   HR@20: 0.066887
+2026-03-31 08:51:09 | INFO    |   Evaluated users: 6040
+2026-03-31 08:51:09 | INFO    |   Train time     : 101.99s
+2026-03-31 08:51:09 | INFO    |   Eval  time     : 186.26s
+2026-03-31 08:51:09 | INFO    |   CPU mem peak   : 191.2 MB
+2026-03-31 08:51:09 | INFO    |   GPU mem peak   : 2375.7 MB
+2026-03-31 08:51:09 | INFO    | Results saved to /content/drive/My Drive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02/src/results/ConvNCF_movielens.json
+2026-03-31 08:51:09 | INFO    | Checkpoint saved
+2026-03-31 08:51:09 | INFO    | ======================================================================
+2026-03-31 08:51:09 | INFO    | MODEL=LightGCN  DATASET=movielens  DEVICE=cuda
+2026-03-31 08:51:09 | INFO    | ======================================================================
+2026-03-31 08:51:10 | INFO    | Dataset loaded in 0.87s  (users=6040, items=3706, train=800167, test=200042)
+2026-03-31 08:52:13 | INFO    | Training finished in 62.01s
+2026-03-31 08:55:56 | INFO    | Evaluation finished in 222.70s
+2026-03-31 08:55:56 | INFO    | --- Results ---
+2026-03-31 08:55:56 | INFO    |   Recall@10: 0.067011
+2026-03-31 08:55:56 | INFO    |   Recall@20: 0.113616
+2026-03-31 08:55:56 | INFO    |   NDCG@10: 0.203601
+2026-03-31 08:55:56 | INFO    |   NDCG@20: 0.192701
+2026-03-31 08:55:56 | INFO    |   Precision@10: 0.182632
+2026-03-31 08:55:56 | INFO    |   Precision@20: 0.153609
+2026-03-31 08:55:56 | INFO    |   HR@10: 0.671358
+2026-03-31 08:55:56 | INFO    |   HR@20: 0.805132
+2026-03-31 08:55:56 | INFO    |   Evaluated users: 6040
+2026-03-31 08:55:56 | INFO    |   Train time     : 62.01s
+2026-03-31 08:55:56 | INFO    |   Eval  time     : 222.70s
+2026-03-31 08:55:56 | INFO    |   CPU mem peak   : 145.7 MB
+2026-03-31 08:55:56 | INFO    |   GPU mem peak   : 176.8 MB
+2026-03-31 08:55:56 | INFO    | Results saved to /content/drive/My Drive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02/src/results/LightGCN_movielens.json
+2026-03-31 08:55:56 | INFO    | Checkpoint saved
+2026-03-31 08:55:56 | INFO    | ======================================================================
+2026-03-31 08:55:56 | INFO    | MODEL=NGCF  DATASET=movielens  DEVICE=cuda
+2026-03-31 08:55:56 | INFO    | ======================================================================
+2026-03-31 08:55:58 | INFO    | Dataset loaded in 1.50s  (users=6040, items=3706, train=800167, test=200042)
+2026-03-31 08:57:02 | INFO    | Training finished in 63.03s
+2026-03-31 09:00:51 | INFO    | Evaluation finished in 229.27s
+2026-03-31 09:00:51 | INFO    | --- Results ---
+2026-03-31 09:00:51 | INFO    |   Recall@10: 0.064871
+2026-03-31 09:00:51 | INFO    |   Recall@20: 0.116022
+2026-03-31 09:00:51 | INFO    |   NDCG@10: 0.192219
+2026-03-31 09:00:51 | INFO    |   NDCG@20: 0.190610
+2026-03-31 09:00:51 | INFO    |   Precision@10: 0.180497
+2026-03-31 09:00:51 | INFO    |   Precision@20: 0.162740
+2026-03-31 09:00:51 | INFO    |   HR@10: 0.671523
+2026-03-31 09:00:51 | INFO    |   HR@20: 0.801821
+2026-03-31 09:00:51 | INFO    |   Evaluated users: 6040
+2026-03-31 09:00:51 | INFO    |   Train time     : 63.03s
+2026-03-31 09:00:51 | INFO    |   Eval  time     : 229.27s
+2026-03-31 09:00:51 | INFO    |   CPU mem peak   : 145.7 MB
+2026-03-31 09:00:51 | INFO    |   GPU mem peak   : 219.3 MB
+2026-03-31 09:00:51 | INFO    | Results saved to /content/drive/My Drive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02/src/results/NGCF_movielens.json
+2026-03-31 09:00:51 | INFO    | Checkpoint saved
+2026-03-31 09:00:51 | INFO    | ======================================================================
+2026-03-31 09:00:51 | INFO    | MODEL=SimpleX  DATASET=movielens  DEVICE=cuda
+2026-03-31 09:00:51 | INFO    | ======================================================================
+2026-03-31 09:00:52 | INFO    | Dataset loaded in 0.86s  (users=6040, items=3706, train=800167, test=200042)

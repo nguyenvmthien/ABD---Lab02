@@ -75,6 +75,9 @@ class ConvNCFConfig:
 	epochs: int = 3
 	batch_size: int = 512
 	device: str = "cpu"
+	# Early stopping
+	patience: int = 5
+	min_delta: float = 1e-4
 
 
 class ConvNCFTrainer:
@@ -144,13 +147,17 @@ class ConvNCFTrainer:
 		opt_net = torch.optim.Adagrad(net_params, lr=self.cfg.lr_net)
 
 		self.model.train()
+		best_loss = float("inf")
+		no_improve = 0
+
 		for epoch_idx in range(self.cfg.epochs):
 			users, pos_items, neg_items = self._build_triplets(train, rng)
 			if not users:
 				print(f"[ConvNCF] Epoch {epoch_idx + 1}/{self.cfg.epochs}: no training triplets")
 				continue
 
-			print(f"[ConvNCF] Epoch {epoch_idx + 1}/{self.cfg.epochs}: {len(users)} triplets")
+			epoch_loss = 0.0
+			n_batches = 0
 
 			for start in range(0, len(users), self.cfg.batch_size):
 				end = start + self.cfg.batch_size
@@ -183,6 +190,28 @@ class ConvNCFTrainer:
 				loss.backward()
 				opt_embed.step()
 				opt_net.step()
+
+				epoch_loss += loss.item()
+				n_batches += 1
+
+			avg_loss = epoch_loss / max(n_batches, 1)
+			print(
+				f"[ConvNCF] Epoch {epoch_idx + 1}/{self.cfg.epochs}: "
+				f"{len(users)} triplets, avg_loss={avg_loss:.6f}"
+			)
+
+			# Early stopping check
+			if avg_loss < best_loss - self.cfg.min_delta:
+				best_loss = avg_loss
+				no_improve = 0
+			else:
+				no_improve += 1
+				if no_improve >= self.cfg.patience:
+					print(
+						f"[ConvNCF] Early stopping at epoch {epoch_idx + 1} "
+						f"(no improvement for {self.cfg.patience} epochs, best_loss={best_loss:.6f})"
+					)
+					break
 
 	def score_items(self, user: int, items: np.ndarray) -> np.ndarray:
 		self.model.eval()

@@ -121,6 +121,9 @@ class LightGCNConfig:
     epochs: int = 50
     batch_size: int = 2048
     device: str = "cpu"
+    # Early stopping
+    patience: int = 5
+    min_delta: float = 1e-4
 
 
 # =====================================================================
@@ -191,16 +194,14 @@ class LightGCNTrainer:
             self.model.parameters(), lr=self.cfg.lr
         )
         self.model.train()
+        best_loss = float("inf")
+        no_improve = 0
 
         for epoch in range(self.cfg.epochs):
             users, pos_items, neg_items = self._build_triplets(train, rng)
             if not users:
                 print(f"[LightGCN] Epoch {epoch+1}/{self.cfg.epochs}: no triplets")
                 continue
-            print(
-                f"[LightGCN] Epoch {epoch+1}/{self.cfg.epochs}: "
-                f"{len(users)} triplets"
-            )
 
             epoch_loss = 0.0
             n_batch = 0
@@ -228,7 +229,24 @@ class LightGCNTrainer:
                 epoch_loss += loss.item()
                 n_batch += 1
 
-            print(f"  avg loss = {epoch_loss / max(n_batch, 1):.6f}")
+            avg_loss = epoch_loss / max(n_batch, 1)
+            print(
+                f"[LightGCN] Epoch {epoch+1}/{self.cfg.epochs}: "
+                f"{len(users)} triplets, avg_loss={avg_loss:.6f}"
+            )
+
+            # Early stopping
+            if avg_loss < best_loss - self.cfg.min_delta:
+                best_loss = avg_loss
+                no_improve = 0
+            else:
+                no_improve += 1
+                if no_improve >= self.cfg.patience:
+                    print(
+                        f"[LightGCN] Early stopping at epoch {epoch+1} "
+                        f"(no improvement for {self.cfg.patience} epochs, best_loss={best_loss:.6f})"
+                    )
+                    break
 
     # ------------------------------------------------------------------
     def score_items(self, user: int, items: np.ndarray) -> np.ndarray:

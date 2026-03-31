@@ -167,6 +167,9 @@ class SimpleXConfig:
     epochs: int = 50
     batch_size: int = 512
     device: str = "cpu"
+    # Early stopping
+    patience: int = 5
+    min_delta: float = 1e-4
 
 
 # =====================================================================
@@ -333,6 +336,9 @@ class SimpleXTrainer:
         pairs = [(u, i) for u, items in train.items() for i in items]
 
         self.model.train()
+        best_loss = float("inf")
+        no_improve = 0
+
         for epoch in range(self.cfg.epochs):
             rng.shuffle(pairs)
             epoch_loss = 0.0
@@ -394,6 +400,19 @@ class SimpleXTrainer:
                 f"[SimpleX] Epoch {epoch+1}/{self.cfg.epochs}: "
                 f"{len(pairs)} pairs, avg loss = {avg:.6f}"
             )
+
+            # Early stopping
+            if avg < best_loss - self.cfg.min_delta:
+                best_loss = avg
+                no_improve = 0
+            else:
+                no_improve += 1
+                if no_improve >= self.cfg.patience:
+                    print(
+                        f"[SimpleX] Early stopping at epoch {epoch+1} "
+                        f"(no improvement for {self.cfg.patience} epochs, best_loss={best_loss:.6f})"
+                    )
+                    break
 
     # ------------------------------------------------------------------
     def save_checkpoint(self, path: str | Path) -> None:

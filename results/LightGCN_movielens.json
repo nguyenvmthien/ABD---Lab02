@@ -1,0 +1,25 @@
+{
+  "model": "LightGCN",
+  "dataset": "movielens",
+  "device": "cuda",
+  "epochs": 2,
+  "emb_dim": 64,
+  "batch_size": 4096,
+  "lr": 0.001,
+  "metrics": {
+    "Recall@10": 0.067011,
+    "Recall@20": 0.113616,
+    "NDCG@10": 0.203601,
+    "NDCG@20": 0.192701,
+    "Precision@10": 0.182632,
+    "Precision@20": 0.153609,
+    "HR@10": 0.671358,
+    "HR@20": 0.805132,
+    "n_eval_users": 6040.0
+  },
+  "train_time_s": 62.01,
+  "eval_time_s": 222.7,
+  "cpu_peak_mb": 145.7,
+  "gpu_peak_mb": 176.8,
+  "timestamp": "2026-03-31T08:55:56.417650"
+}
