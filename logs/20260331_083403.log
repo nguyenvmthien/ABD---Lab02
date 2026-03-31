@@ -1,0 +1,13 @@
+2026-03-31 08:34:03 | INFO    | Experiment tag : 20260331_083403
+2026-03-31 08:34:03 | INFO    | Models         : ['LightGCN']
+2026-03-31 08:34:03 | INFO    | Datasets       : ['movielens']
+2026-03-31 08:34:03 | INFO    | Device         : cpu
+2026-03-31 08:34:03 | INFO    | Epochs         : 50
+2026-03-31 08:34:03 | INFO    | Batch size     : 2048
+2026-03-31 08:34:03 | INFO    | Embedding dim  : 64
+2026-03-31 08:34:03 | INFO    | Learning rate  : 0.001
+2026-03-31 08:34:03 | INFO    | Seed           : 42
+2026-03-31 08:34:03 | INFO    | ======================================================================
+2026-03-31 08:34:03 | INFO    | MODEL=LightGCN  DATASET=movielens  DEVICE=cpu
+2026-03-31 08:34:03 | INFO    | ======================================================================
+2026-03-31 08:34:08 | INFO    | Dataset loaded in 4.36s  (users=6040, items=3706, train=800167, test=200042)

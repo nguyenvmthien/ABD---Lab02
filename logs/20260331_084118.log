@@ -1,0 +1,49 @@
+2026-03-31 08:41:18 | INFO    | Experiment tag : 20260331_084118
+2026-03-31 08:41:18 | INFO    | Models         : ['LightGCN']
+2026-03-31 08:41:18 | INFO    | Datasets       : ['movielens']
+2026-03-31 08:41:18 | INFO    | Device         : cuda
+2026-03-31 08:41:18 | INFO    | Epochs         : 2
+2026-03-31 08:41:18 | INFO    | Batch size     : 4096
+2026-03-31 08:41:18 | INFO    | Embedding dim  : 64
+2026-03-31 08:41:18 | INFO    | Learning rate  : 0.001
+2026-03-31 08:41:18 | INFO    | Seed           : 42
+2026-03-31 08:41:18 | INFO    | GPU name       : Tesla T4
+2026-03-31 08:41:18 | INFO    | GPU memory     : 14.6 GB
+2026-03-31 08:41:18 | INFO    | ======================================================================
+2026-03-31 08:41:18 | INFO    | MODEL=LightGCN  DATASET=movielens  DEVICE=cuda
+2026-03-31 08:41:18 | INFO    | ======================================================================
+2026-03-31 08:41:20 | INFO    | Dataset loaded in 1.47s  (users=6040, items=3706, train=800167, test=200042)
+2026-03-31 08:42:33 | INFO    | Training finished in 71.20s
+2026-03-31 08:46:16 | INFO    | Evaluation finished in 223.28s
+2026-03-31 08:46:16 | INFO    | --- Results ---
+2026-03-31 08:46:16 | INFO    |   Recall@10: 0.067002
+2026-03-31 08:46:16 | INFO    |   Recall@20: 0.113556
+2026-03-31 08:46:16 | INFO    |   NDCG@10: 0.203522
+2026-03-31 08:46:16 | INFO    |   NDCG@20: 0.192661
+2026-03-31 08:46:16 | INFO    |   Precision@10: 0.182566
+2026-03-31 08:46:16 | INFO    |   Precision@20: 0.153576
+2026-03-31 08:46:16 | INFO    |   HR@10: 0.671192
+2026-03-31 08:46:16 | INFO    |   HR@20: 0.804967
+2026-03-31 08:46:16 | INFO    |   Evaluated users: 6040
+2026-03-31 08:46:16 | INFO    |   Train time     : 71.20s
+2026-03-31 08:46:16 | INFO    |   Eval  time     : 223.28s
+2026-03-31 08:46:16 | INFO    |   CPU mem peak   : 203.4 MB
+2026-03-31 08:46:16 | INFO    |   GPU mem peak   : 161.6 MB
+2026-03-31 08:46:16 | ERROR   | FAILED: LightGCN on movielens: [Errno 2] No such file or directory: '/content/drive/My Drive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02/src/results/LightGCN_movielens.json'
+2026-03-31 08:46:16 | ERROR   | Traceback (most recent call last):
+  File "/content/drive/My Drive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02/src/main.py", line 356, in main
+    rec = run_experiment(
+          ^^^^^^^^^^^^^^^
+  File "/content/drive/My Drive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02/src/main.py", line 252, in run_experiment
+    with open(json_path, "w") as f:
+         ^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/content/drive/My Drive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02/src/results/LightGCN_movielens.json'
+
+2026-03-31 08:46:16 | INFO    | 
+==========================================================================================
+2026-03-31 08:46:16 | INFO    | SUMMARY
+2026-03-31 08:46:16 | INFO    | ==========================================================================================
+2026-03-31 08:46:16 | INFO    | Model        Dataset        R@10       N@10       R@20       N@20       Train(s)   Eval(s)    CPU(MB)    GPU(MB)   
+2026-03-31 08:46:16 | INFO    | ------------------------------------------------------------------------------------------
+2026-03-31 08:46:16 | INFO    | 
+All results saved to /content/drive/My Drive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02/src/results/summary_20260331_084118.json

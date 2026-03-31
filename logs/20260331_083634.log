@@ -1,0 +1,10 @@
+2026-03-31 08:36:34 | INFO    | Experiment tag : 20260331_083634
+2026-03-31 08:36:34 | INFO    | Models         : ['LightGCN']
+2026-03-31 08:36:34 | INFO    | Datasets       : ['movielens']
+2026-03-31 08:36:34 | INFO    | Device         : cuda
+2026-03-31 08:36:34 | INFO    | Epochs         : 50
+2026-03-31 08:36:34 | INFO    | Batch size     : 2048
+2026-03-31 08:36:34 | INFO    | Embedding dim  : 64
+2026-03-31 08:36:34 | INFO    | Learning rate  : 0.001
+2026-03-31 08:36:34 | INFO    | Seed           : 42
+2026-03-31 08:36:34 | INFO    | GPU name       : Tesla T4
