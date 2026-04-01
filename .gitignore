@@ -1,2 +1,6 @@
 __pycache__
 22127398
+resutls
+logs
+.DS_Store
+checkpoints
