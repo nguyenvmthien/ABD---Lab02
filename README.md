@@ -11,7 +11,7 @@ pip install torch numpy pandas scipy
 ## Cấu trúc lệnh chung
 
 ```bash
-python src/main.py \
+python main.py \
   --model <MODEL> \
   --dataset <DATASET> \
   --device <DEVICE> \
@@ -53,51 +53,51 @@ Chạy 1 epoch, chỉ đánh giá 50 user để kiểm tra pipeline:
 
 ```bash
 # ConvNCF trên MovieLens
-python src/main.py --model ConvNCF --dataset movielens --epochs 1 --batch_size 512 --max_eval_users 50
+python main.py --model ConvNCF --dataset movielens --epochs 1 --batch_size 512 --max_eval_users 50
 
 # LightGCN trên Amazon-Book
-python src/main.py --model LightGCN --dataset amazon-book --epochs 1 --batch_size 2048 --max_eval_users 50
+python main.py --model LightGCN --dataset amazon-book --epochs 1 --batch_size 2048 --max_eval_users 50
 ```
 
 ### 2. Chạy từng model riêng (CPU)
 
 ```bash
 # ConvNCF
-python src/main.py --model ConvNCF --dataset movielens --epochs 50 --batch_size 512 --lr 0.05
+python main.py --model ConvNCF --dataset movielens --epochs 50 --batch_size 512 --lr 0.05
 
 # LightGCN
-python src/main.py --model LightGCN --dataset movielens --epochs 100 --batch_size 2048 --lr 1e-3 --decay 1e-4 --n_layers 3
+python main.py --model LightGCN --dataset movielens --epochs 100 --batch_size 2048 --lr 1e-3 --decay 1e-4 --n_layers 3
 
 # NGCF
-python src/main.py --model NGCF --dataset movielens --epochs 50 --batch_size 1024 --lr 1e-4 --decay 1e-5 --n_layers 3
+python main.py --model NGCF --dataset movielens --epochs 50 --batch_size 1024 --lr 1e-4 --decay 1e-5 --n_layers 3
 
 # SimpleX
-python src/main.py --model SimpleX --dataset movielens --epochs 50 --batch_size 512 --lr 1e-3
+python main.py --model SimpleX --dataset movielens --epochs 50 --batch_size 512 --lr 1e-3
 ```
 
 ### 3. Chạy tất cả model trên 1 dataset (CPU)
 
 ```bash
-python src/main.py --model all --dataset movielens --epochs 50 --batch_size 2048
+python main.py --model all --dataset movielens --epochs 50 --batch_size 2048
 ```
 
 ### 4. Chạy tất cả model trên tất cả dataset (CPU)
 
 ```bash
-python src/main.py --model all --dataset all --epochs 50 --batch_size 2048
+python main.py --model all --dataset all --epochs 50 --batch_size 2048
 ```
 
 ### 5. Chạy trên GPU T4 (Kaggle / Colab)
 
 ```bash
 # Tất cả model, tất cả dataset, GPU
-python src/main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
+python main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
 
 # Chỉ LightGCN trên GPU
-python src/main.py --model LightGCN --dataset movielens --device cuda --epochs 100 --batch_size 4096 --n_layers 3
+python main.py --model LightGCN --dataset movielens --device cuda --epochs 100 --batch_size 4096 --n_layers 3
 
 # SimpleX trên GPU (giảm batch vì num_negs=50 tốn VRAM)
-python src/main.py --model SimpleX --dataset amazon-book --device cuda --epochs 50 --batch_size 1024
+python main.py --model SimpleX --dataset amazon-book --device cuda --epochs 50 --batch_size 1024
 ```
 
 ### 6. Hyperparameter tuning (Grid search)
@@ -107,7 +107,7 @@ python src/main.py --model SimpleX --dataset amazon-book --device cuda --epochs 
 for lr in 1e-4 5e-4 1e-3; do
   for decay in 1e-5 1e-4 1e-3; do
     for layers in 2 3 4; do
-      python src/main.py \
+      python main.py \
         --model LightGCN \
         --dataset movielens \
         --device cuda \
@@ -123,7 +123,7 @@ done
 # Grid search NGCF
 for lr in 1e-5 1e-4 5e-4; do
   for decay in 1e-6 1e-5 1e-4; do
-    python src/main.py \
+    python main.py \
       --model NGCF \
       --dataset movielens \
       --device cuda \
@@ -137,7 +137,7 @@ done
 # Grid search SimpleX
 for lr in 5e-4 1e-3 5e-3; do
   for emb in 32 64 128; do
-    python src/main.py \
+    python main.py \
       --model SimpleX \
       --dataset movielens \
       --device cuda \
@@ -184,10 +184,10 @@ src/
 
 ```bash
 # Xem log
-cat src/logs/*.log | tail -30
+cat logs/*.log | tail -30
 
 # Xem kết quả JSON
-python -c "import json; print(json.dumps(json.load(open('src/results/LightGCN_movielens.json')), indent=2))"
+python -c "import json; print(json.dumps(json.load(open('results/LightGCN_movielens.json')), indent=2))"
 ```
 
 ### Tổng hợp kết quả bằng Python
@@ -195,7 +195,7 @@ python -c "import json; print(json.dumps(json.load(open('src/results/LightGCN_mo
 ```python
 import json, glob, pandas as pd
 
-files = glob.glob("src/results/*.json")
+files = glob.glob("results/*.json")
 files = [f for f in files if "summary" not in f]
 records = [json.load(open(f)) for f in files]
 df = pd.json_normalize(records)
@@ -220,7 +220,7 @@ os.chdir('/content/drive/MyDrive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02')
 !pip install torch numpy pandas scipy
 
 # 4. Chạy thí nghiệm
-!python src/main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
+!python main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
 ```
 
 ## Setup Kaggle
@@ -230,5 +230,5 @@ os.chdir('/content/drive/MyDrive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02')
 # 2. Chọn Accelerator: GPU T4 x2
 # 3. Chạy trong notebook cell:
 !pip install torch numpy pandas scipy
-!python src/main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
+!python main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
 ```
