@@ -33,17 +33,18 @@ src/
 ## 3. General command
 
 ```bash
-python src/main.py \
-  --model <ConvNCF|LightGCN|NGCF|SimpleX|all> \
-  --dataset <movielens|amazon-book|all> \
-  --device <cpu|cuda> \
-  --epochs <num_epochs> \
-  --batch_size <batch_size> \
-  --emb_dim <embedding_dim> \
-  --lr <learning_rate> \
-  --decay <l2_weight> \
-  --n_layers <num_gcn_layers> \
-  --seed <seed>
+python main.py \
+  --model <MODEL> \
+  --dataset <DATASET> \
+  --device <DEVICE> \
+  --epochs <N> \
+  --batch_size <N> \
+  --emb_dim <N> \
+  --lr <FLOAT> \
+  --decay <FLOAT> \
+  --n_layers <N> \
+  --seed <N> \
+  --max_eval_users <N>
 ```
 
 ## 4. Main arguments
@@ -69,37 +70,101 @@ python src/main.py \
 ### 5.1 Quick pipeline sanity check
 
 ```bash
-python src/main.py --model ConvNCF --dataset movielens --epochs 1 --batch_size 512 --max_eval_users 200
+# ConvNCF trên MovieLens
+python main.py --model ConvNCF --dataset movielens --epochs 1 --batch_size 512 --max_eval_users 50
+
+# LightGCN trên Amazon-Book
+python main.py --model LightGCN --dataset amazon-book --epochs 1 --batch_size 2048 --max_eval_users 50
 ```
 
 ### 5.2 Run one model on one dataset
 
 ```bash
-python src/main.py --model LightGCN --dataset movielens --device cpu --epochs 50 --batch_size 2048 --lr 1e-3 --decay 1e-4 --n_layers 3
+# ConvNCF
+python main.py --model ConvNCF --dataset movielens --epochs 50 --batch_size 512 --lr 0.05
+
+# LightGCN
+python main.py --model LightGCN --dataset movielens --epochs 100 --batch_size 2048 --lr 1e-3 --decay 1e-4 --n_layers 3
+
+# NGCF
+python main.py --model NGCF --dataset movielens --epochs 50 --batch_size 1024 --lr 1e-4 --decay 1e-5 --n_layers 3
+
+# SimpleX
+python main.py --model SimpleX --dataset movielens --epochs 50 --batch_size 512 --lr 1e-3
 ```
 
 ### 5.3 Run all models on one dataset
 
 ```bash
-python src/main.py --model all --dataset movielens --device cpu --epochs 50 --batch_size 2048
+python main.py --model all --dataset movielens --epochs 50 --batch_size 2048
 ```
 
 ### 5.4 Run all models on all datasets
 
 ```bash
-python src/main.py --model all --dataset all --device cpu --epochs 50 --batch_size 2048
+python main.py --model all --dataset all --epochs 50 --batch_size 2048
 ```
 
 ### 5.5 Run with GPU (Kaggle/Colab)
 
 ```bash
-python src/main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
+# Tất cả model, tất cả dataset, GPU
+python main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
+
+# Chỉ LightGCN trên GPU
+python main.py --model LightGCN --dataset movielens --device cuda --epochs 100 --batch_size 4096 --n_layers 3
+
+# SimpleX trên GPU (giảm batch vì num_negs=50 tốn VRAM)
+python main.py --model SimpleX --dataset amazon-book --device cuda --epochs 50 --batch_size 1024
 ```
 
 ### 5.6 Evaluate from checkpoint only (no training)
 
 ```bash
-python src/main.py --model LightGCN --dataset movielens --eval_only --checkpoint src/results/checkpoints/LightGCN_movielens_emb64_lr0.001_bs2048_ep50.pt
+# Grid search LightGCN
+for lr in 1e-4 5e-4 1e-3; do
+  for decay in 1e-5 1e-4 1e-3; do
+    for layers in 2 3 4; do
+      python main.py \
+        --model LightGCN \
+        --dataset movielens \
+        --device cuda \
+        --lr $lr \
+        --decay $decay \
+        --n_layers $layers \
+        --epochs 50 \
+        --batch_size 4096
+    done
+  done
+done
+
+# Grid search NGCF
+for lr in 1e-5 1e-4 5e-4; do
+  for decay in 1e-6 1e-5 1e-4; do
+    python main.py \
+      --model NGCF \
+      --dataset movielens \
+      --device cuda \
+      --lr $lr \
+      --decay $decay \
+      --epochs 50 \
+      --batch_size 2048
+  done
+done
+
+# Grid search SimpleX
+for lr in 5e-4 1e-3 5e-3; do
+  for emb in 32 64 128; do
+    python main.py \
+      --model SimpleX \
+      --dataset movielens \
+      --device cuda \
+      --lr $lr \
+      --emb_dim $emb \
+      --epochs 50 \
+      --batch_size 1024
+  done
+done
 ```
 
 ## 6. Suggested batch sizes by resource
@@ -127,7 +192,11 @@ If matplotlib is installed and training is performed, a loss plot is also saved:
 ## 8. Quick result check
 
 ```bash
-tail -n 40 src/logs/*.log
+# Xem log
+cat logs/*.log | tail -30
+
+# Xem kết quả JSON
+python -c "import json; print(json.dumps(json.load(open('results/LightGCN_movielens.json')), indent=2))"
 ```
 
 ```bash
@@ -143,8 +212,8 @@ import glob
 import json
 import pandas as pd
 
-files = glob.glob('src/results/*.json')
-files = [f for f in files if '/summary_' not in f]
+files = glob.glob("results/*.json")
+files = [f for f in files if "summary" not in f]
 records = [json.load(open(f)) for f in files]
 
 df = pd.json_normalize(records)
@@ -166,17 +235,21 @@ drive.mount('/content/drive')
 import os
 os.chdir('/content/drive/MyDrive/A+SCHOOL-HK11/applied-big-data/Lab/Lab02')
 
-!pip install torch numpy pandas scipy matplotlib
-!python src/main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
+# 3. Cài đặt dependencies
+!pip install torch numpy pandas scipy
+
+# 4. Chạy thí nghiệm
+!python main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
 ```
 
 ## 11. Run on Kaggle
 
-1. Set Accelerator to GPU.
-2. Install packages:
-
-```bash
-pip install torch numpy pandas scipy matplotlib
+```python
+# 1. Upload data hoặc thêm dataset
+# 2. Chọn Accelerator: GPU T4 x2
+# 3. Chạy trong notebook cell:
+!pip install torch numpy pandas scipy
+!python main.py --model all --dataset all --device cuda --epochs 50 --batch_size 4096
 ```
 
 3. Run:
